@@ -3,10 +3,8 @@
 	import ArrowUp20 from 'carbon-icons-svelte/lib/ArrowUp20';
 	import ArrowDown20 from 'carbon-icons-svelte/lib/ArrowDown20';
 	import TrashCan20 from 'carbon-icons-svelte/lib/TrashCan20';
-	import { Doctor, positions } from '$lib/stores';
+	import { Doctor, doctors, positions } from '$lib/stores';
 	export let doc: Doctor;
-	export let first = false;
-	export let last = false;
 	export let n = 0;
 	export let onDelete: (n: number) => void;
 	export let onMove: (a: number, b: number) => void;
@@ -37,9 +35,9 @@
 		</Row>
 		<Row>
 			<Column sm={4} md={5}>
-				<Select labelText="Select menu" bind:selected={doc.positionAbbr}>
+				<Select labelText="Select menu" bind:selected={doc.positionId}>
 					{#each $positions as pos (pos.abbr)}
-						<SelectItem value={pos.abbr} text={pos.title} />
+						<SelectItem value={pos.id} text={pos.title} />
 					{/each}
 				</Select>
 			</Column>
@@ -79,7 +77,7 @@
 				kind="tertiary"
 				size="field"
 				icon={ArrowUp20}
-				disabled={first}
+				disabled={n === 0}
 				on:click={() => onMove(n, n - 1)}
 			/>
 
@@ -88,7 +86,7 @@
 				kind="tertiary"
 				size="field"
 				icon={ArrowDown20}
-				disabled={last}
+				disabled={n === $doctors.length - 1}
 				on:click={() => onMove(n, n + 1)}
 			/>
 

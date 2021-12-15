@@ -1,27 +1,34 @@
 import { writable } from 'svelte/store';
 export interface Position {
+	id: string;
 	title: string;
 	abbr: string;
 }
 export interface Doctor {
+	id: string;
 	name: string;
-	positionAbbr: Position['abbr'];
+	positionId: Position['id'];
 	position?: number;
 	suppl?: string;
 	image?: string;
 }
 
+const random = () => Math.random().toString().substring(2, 8);
+
 const createPositions = () => {
 	const positions: Position[] = [
 		{
+			id: 'lo',
 			title: 'Ledende overlæge',
 			abbr: 'LO'
 		},
 		{
+			id: 'ovl/prof',
 			title: 'Overlæge, professor',
 			abbr: 'Ovl./prof.'
 		},
 		{
+			id: 'uao',
 			title: 'Uddannelsesansvarlig overlæge',
 			abbr: 'UAO'
 		}
@@ -37,7 +44,7 @@ const createPositions = () => {
 		if (hasEmpty) return;
 
 		if (!pos) {
-			pos = { title: '', abbr: '' };
+			pos = { id: 'pos-' + random(), title: '', abbr: '' };
 		}
 
 		return [...positions, pos];
@@ -60,7 +67,8 @@ const createPositions = () => {
 		add: (pos?: Position) => update((curr) => addPosition(curr, pos)),
 		delete: (n: number) => update((curr) => deletePosition(curr, n)),
 		swap: (a: number, b: number) => update((curr) => swapPositions(curr, a, b)),
-		reset: () => set(positions)
+		reset: () => set(positions),
+		set: set
 	};
 };
 export const positions = createPositions();
@@ -68,9 +76,10 @@ export const positions = createPositions();
 const createDoctors = () => {
 	const doctors: Doctor[] = [
 		{
-			name: 'Testnavn',
-			positionAbbr: 'LO',
-			suppl: 'Er for sej'
+			id: random(),
+			name: '',
+			positionId: 'lo',
+			suppl: ''
 		}
 	];
 
@@ -87,7 +96,7 @@ const createDoctors = () => {
 		}
 
 		if (!doc) {
-			doc = { name: '', positionAbbr: 'LO', suppl: '' };
+			doc = { id: random(), name: '', positionId: 'lo', suppl: '' };
 		}
 
 		return [...doctors, doc];

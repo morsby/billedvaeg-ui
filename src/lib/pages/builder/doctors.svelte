@@ -10,14 +10,7 @@
 <Grid>
 	{#each $doctors as doc, n (doc.name)}
 		<div animate:flip={{ duration: 250 }} id="doc-{doc.name}">
-			<InputDoctor
-				{doc}
-				{n}
-				last={n == $doctors.length - 1}
-				first={n === 0}
-				onDelete={doctors.delete}
-				onMove={doctors.swap}
-			/>
+			<InputDoctor {doc} {n} onDelete={doctors.delete} onMove={doctors.swap} />
 		</div>
 	{/each}
 </Grid>

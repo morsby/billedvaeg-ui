@@ -15,7 +15,7 @@
 		let ppl = $doctors.map((doc) => {
 			doc = {
 				...doc,
-				position: $positions.findIndex((pos) => pos.abbr === doc.positionAbbr)
+				position: $positions.findIndex((pos) => pos.id === doc.positionId)
 			};
 
 			return doc;
@@ -24,6 +24,7 @@
 		const res = await fetch('http://localhost:5000', {
 			method: 'POST',
 			body: JSON.stringify({
+				sort: true,
 				positions: poss,
 				people: ppl
 			})
