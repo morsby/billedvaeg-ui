@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
 	import { Grid, Button } from 'carbon-components-svelte';
-	import Positions from '$lib/components/PositionInput.svelte';
+	import PositionsInput from '$lib/components/InputPosition.svelte';
 	import { positions } from '$lib/stores';
 </script>
 
@@ -9,8 +9,8 @@
 <p>Hvilke stillinger findes?</p>
 <Grid>
 	{#each $positions as pos, n (pos.title)}
-		<div animate:flip id="pos-{pos.title}">
-			<Positions
+		<div animate:flip={{ duration: 250 }} id="pos-{pos.title}">
+			<PositionsInput
 				value={pos}
 				first={n === 0}
 				last={n === $positions.length - 1}

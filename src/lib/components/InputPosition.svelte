@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Row, Column, TextInput, Button } from 'carbon-components-svelte';
+	import { Row, Column, Button } from 'carbon-components-svelte';
 	import ArrowUp20 from 'carbon-icons-svelte/lib/ArrowUp20';
 	import ArrowDown20 from 'carbon-icons-svelte/lib/ArrowDown20';
 	import TrashCan20 from 'carbon-icons-svelte/lib/TrashCan20';
@@ -7,12 +7,12 @@
 	export let first = false;
 	export let last = false;
 	export let n = 0;
-	export let onDelete = (n: number) => {};
-	export let onMove = (a: number, b: number) => {};
+	export let onDelete: (n: number) => void;
+	export let onMove: (a: number, b: number) => void;
 </script>
 
 <Row style="margin-bottom:1.5rem">
-	<Column sm={8} md={5}>
+	<Column sm={4} md={5}>
 		<div class="bx--form-item bx--text-input-wrapper">
 			<label for="pos-title-{value.abbr}" class="false bx--label">Titel</label>
 			<div class="bx--text-input__field-outer-wrapper">
@@ -28,7 +28,7 @@
 			</div>
 		</div>
 	</Column>
-	<Column sm={3} md={2}>
+	<Column sm={2} md={2}>
 		<div class="bx--form-item bx--text-input-wrapper">
 			<label for="pos-abbr-{value.abbr}" class="false bx--label">Forkortelse</label>
 			<div class="bx--text-input__field-outer-wrapper">
@@ -44,7 +44,7 @@
 			</div>
 		</div>
 	</Column>
-	<Column sm={1} md={1}>
+	<Column sm={2} md={1}>
 		<div class="center">
 			<Button
 				iconDescription="Ryk op"

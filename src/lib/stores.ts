@@ -1,11 +1,12 @@
 import { writable } from 'svelte/store';
-interface Position {
+export interface Position {
 	title: string;
 	abbr: string;
 }
-interface Doctor {
+export interface Doctor {
 	name: string;
-	position: Position['abbr'];
+	positionAbbr: Position['abbr'];
+	position?: number;
 	suppl?: string;
 	image?: string;
 }
@@ -57,17 +58,18 @@ const createPositions = () => {
 	return {
 		subscribe,
 		add: (pos?: Position) => update((curr) => addPosition(curr, pos)),
-		delete: (n) => update((curr) => deletePosition(curr, n)),
-		swap: (a, b) => update((curr) => swapPositions(curr, a, b)),
+		delete: (n: number) => update((curr) => deletePosition(curr, n)),
+		swap: (a: number, b: number) => update((curr) => swapPositions(curr, a, b)),
 		reset: () => set(positions)
 	};
 };
+export const positions = createPositions();
 
 const createDoctors = () => {
 	const doctors: Doctor[] = [
 		{
 			name: 'Testnavn',
-			position: 'LO',
+			positionAbbr: 'LO',
 			suppl: 'Er for sej'
 		}
 	];
@@ -85,7 +87,7 @@ const createDoctors = () => {
 		}
 
 		if (!doc) {
-			doc = { name: '', position: 'LO', suppl: '' };
+			doc = { name: '', positionAbbr: 'LO', suppl: '' };
 		}
 
 		return [...doctors, doc];
@@ -106,10 +108,9 @@ const createDoctors = () => {
 	return {
 		subscribe,
 		add: (doc?: Doctor) => update((curr) => addDoctor(curr, doc)),
-		delete: (n) => update((curr) => deleteDoctor(curr, n)),
-		swap: (a, b) => update((curr) => swapDoctors(curr, a, b))
+		delete: (n: number) => update((curr) => deleteDoctor(curr, n)),
+		swap: (a: number, b: number) => update((curr) => swapDoctors(curr, a, b))
 	};
 };
 
-export const positions = createPositions();
 export const doctors = createDoctors();

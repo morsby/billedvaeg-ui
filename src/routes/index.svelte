@@ -4,15 +4,28 @@
 
 	import 'carbon-components-svelte/css/g10.css';
 	import { Tab, TabContent, Tabs } from 'carbon-components-svelte';
+	import { doctors, positions } from '$lib/stores';
 
 	let href = '';
 	const handleClick = async () => {
 		href = '';
+
+		let poss = $positions.map((pos, index) => ({ ...pos, value: index }));
+
+		let ppl = $doctors.map((doc) => {
+			doc = {
+				...doc,
+				position: $positions.findIndex((pos) => pos.abbr === doc.positionAbbr)
+			};
+
+			return doc;
+		});
+
 		const res = await fetch('http://localhost:5000', {
 			method: 'POST',
 			body: JSON.stringify({
-				positions: [{ title: 'Ledende overlæge', value: 0 }],
-				people: [{ name: 'Sigurd', position: 0 }]
+				positions: poss,
+				people: ppl
 			})
 		});
 		const data = await res.text();
