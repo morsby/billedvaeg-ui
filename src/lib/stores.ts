@@ -1,76 +1,17 @@
 import { browser } from '$app/env';
 import { writable } from 'svelte/store';
-import { getFromDb, saveToDB } from './db';
-
-export interface Position {
-	id?: number;
-	title: string;
-	abbr: string;
-}
-export interface Doctor {
-	id?: string;
-	name: string;
-	positionId: Position['id'];
-	position?: number;
-	suppl?: string;
-	image?: string;
-}
-
-const initialPositions: Position[] = [
-	{
-		id: 1,
-		title: 'Ledende overlæge',
-		abbr: 'LO'
-	},
-	{
-		id: 2,
-		title: 'Overlæge, professor',
-		abbr: 'Ovl./prof.'
-	},
-	{
-		id: 3,
-		title: 'Uddannelsesansvarlig overlæge',
-		abbr: 'UAO'
-	}
-];
+import { deletePosition, getDoctors, getPositions, putPositions, swapPositions } from './db';
+import type { Doctor, Position } from '$lib/db';
 const createPositions = () => {
 	const positions: Position[] = [];
 
-	const addPosition = (positions: Position[]) => {
-		let hasEmpty = false;
-		positions.forEach((pos) => {
-			if (pos.title === '') {
-				hasEmpty = true;
-			}
-		});
-		if (hasEmpty) return;
-
-		const pos = { title: '', abbr: '' };
-
-		const upd = [...positions, pos];
-		saveToStorage('positions', upd);
-		return upd;
-	};
-
-	const deletePosition = (curr: Position[], n: number) => {
-		curr.splice(n, 1);
-		saveToDB('positions', curr);
-		return curr;
-	};
-
-	const swapPositions = (curr: Position[], a: number, b: number) => {
-		[curr[a], curr[b]] = [curr[b], curr[a]];
-		saveToDB('positions', curr);
-		return curr;
-	};
-
-	const { subscribe, set, update } = writable(positions);
+	const { subscribe, set } = writable(positions);
 
 	return {
 		subscribe,
-		add: () => update((curr) => addPosition(curr)),
-		delete: (n: number) => update((curr) => deletePosition(curr, n)),
-		swap: (a: number, b: number) => update((curr) => swapPositions(curr, a, b)),
+		put: (pos: Position[]) => putPositions(pos),
+		delete: (pos: Position) => deletePosition(pos.id),
+		swap: (pos: Position, direction: 'up' | 'down') => swapPositions(pos, direction),
 		set
 	};
 };
@@ -134,20 +75,7 @@ const createDoctors = () => {
 
 export const doctors = createDoctors();
 
-const updateFromStorage = async (key: string) => {
-	let pos = await getFromDb(key);
-
-	if (!pos || pos.length === 0) {
-		pos = initialPositions;
-	}
-	positions.set(pos);
-};
-
-const saveToStorage = async (key: string, data) => {
-	await saveToDB(key, data);
-	return updateFromStorage(key);
-};
-
 if (browser) {
-	updateFromStorage('positions');
+	getPositions();
+	getDoctors();
 }

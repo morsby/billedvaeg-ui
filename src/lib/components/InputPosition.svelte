@@ -3,25 +3,33 @@
 	import ArrowUp20 from 'carbon-icons-svelte/lib/ArrowUp20';
 	import ArrowDown20 from 'carbon-icons-svelte/lib/ArrowDown20';
 	import TrashCan20 from 'carbon-icons-svelte/lib/TrashCan20';
-	import { Position, positions } from '$lib/stores';
-	export let value: Position;
-	export let n = 0;
-	export let onDelete: (n: number) => void;
-	export let onMove: (a: number, b: number) => void;
+	import { positions } from '$lib/stores';
+	import type { Position } from '$lib/db';
+	export let position: Position;
+
+	const update = (
+		key: string,
+		event: Event & {
+			currentTarget: EventTarget & HTMLInputElement;
+		}
+	) => {
+		positions.put([{ ...position, [key]: (<HTMLInputElement>event.target).value }]);
+	};
 </script>
 
 <Row style="margin-bottom:1.5rem">
 	<Column sm={4} md={5}>
 		<div class="bx--form-item bx--text-input-wrapper">
-			<label for="pos-title-{value.id}" class="false bx--label">Titel</label>
+			<label for="pos-title-{position.id}" class="false bx--label">Titel</label>
 			<div class="bx--text-input__field-outer-wrapper">
 				<div class="bx--text-input__field-wrapper">
 					<input
-						id="pos-title-{value.id}"
+						id="pos-title-{position.id}"
 						placeholder="Stillingens titel"
 						type=""
 						class="bx--text-input"
-						bind:value={value.title}
+						value={position.title}
+						on:input={(event) => update('title', event)}
 					/>
 				</div>
 			</div>
@@ -29,15 +37,16 @@
 	</Column>
 	<Column sm={2} md={2}>
 		<div class="bx--form-item bx--text-input-wrapper">
-			<label for="pos-abbr-{value.id}" class="false bx--label">Forkortelse</label>
+			<label for="pos-abbr-{position.id}" class="false bx--label">Forkortelse</label>
 			<div class="bx--text-input__field-outer-wrapper">
 				<div class="bx--text-input__field-wrapper">
 					<input
-						id="pos-abbr-{value.id}"
+						id="pos-abbr-{position.id}"
 						placeholder="Stillingens forkortelse"
 						type=""
 						class="bx--text-input"
-						bind:value={value.abbr}
+						value={position.abbr}
+						on:input={(event) => update('abbr', event)}
 					/>
 				</div>
 			</div>
@@ -50,8 +59,8 @@
 				kind="tertiary"
 				size="field"
 				icon={ArrowUp20}
-				disabled={n === 0}
-				on:click={() => onMove(n, n - 1)}
+				disabled={position.value === 0}
+				on:click={() => positions.swap(position, 'up')}
 			/>
 
 			<Button
@@ -59,8 +68,8 @@
 				kind="tertiary"
 				size="field"
 				icon={ArrowDown20}
-				disabled={n === $positions.length - 1}
-				on:click={() => onMove(n, n + 1)}
+				disabled={position.value === $positions.length - 1}
+				on:click={() => positions.swap(position, 'down')}
 			/>
 
 			<Button
@@ -68,7 +77,7 @@
 				kind="danger-tertiary"
 				icon={TrashCan20}
 				size="field"
-				on:click={() => onDelete(n)}
+				on:click={() => positions.delete(position)}
 			/>
 		</div>
 	</Column>

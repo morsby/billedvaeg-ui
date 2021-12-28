@@ -3,7 +3,8 @@
 	import ArrowUp20 from 'carbon-icons-svelte/lib/ArrowUp20';
 	import ArrowDown20 from 'carbon-icons-svelte/lib/ArrowDown20';
 	import TrashCan20 from 'carbon-icons-svelte/lib/TrashCan20';
-	import { Doctor, doctors, positions } from '$lib/stores';
+	import { doctors, positions } from '$lib/stores';
+	import type { Doctor } from '$lib/db';
 	export let doc: Doctor;
 	export let n = 0;
 	export let onDelete: (n: number) => void;

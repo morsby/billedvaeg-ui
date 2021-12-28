@@ -8,12 +8,12 @@
 <h2>Stillinger</h2>
 <p>Hvilke stillinger findes?</p>
 <Grid>
-	{#each $positions as pos, n (pos.id)}
+	{#each $positions as pos (pos.id)}
 		<div animate:flip={{ duration: 250 }} id="pos-{pos.id}">
-			<PositionsInput bind:value={pos} {n} onDelete={positions.delete} onMove={positions.swap} />
+			<PositionsInput position={pos} />
 		</div>
 	{/each}
 </Grid>
 <div>
-	<Button on:click={() => positions.add()}>Tilføj stilling</Button>
+	<Button on:click={() => positions.put([])}>Tilføj stilling</Button>
 </div>
