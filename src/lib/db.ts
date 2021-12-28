@@ -10,9 +10,9 @@ export interface Position {
 export interface Doctor {
 	id?: number;
 	name: string;
-	positionId?: Position['id'];
+	positionId: Position['id'];
 	position?: number;
-	suppl?: string;
+	suppl: string;
 	image?: string;
 	order: number;
 }
@@ -35,13 +35,19 @@ export class MySubClassedDexie extends Dexie {
 export const db = new MySubClassedDexie();
 
 export const getDoctors = async (): Promise<string> => {
-	const docs = await db.doctors.toArray();
+	const docs = await db.doctors.orderBy('order').toArray();
 
 	doctors.set(docs);
 	return 'ok';
 };
 
 export const putDoctors = async (docs: Doctor[]): Promise<string> => {
+	const noOfPositions = await db.doctors.count();
+	const firstPosition = await db.positions.orderBy('order').first();
+	//TODO: Make positionId work!!!
+	if (docs.length === 0) {
+		docs = [{ name: 'test', suppl: '', positionId: firstPosition.id, order: noOfPositions }];
+	}
 	await db.doctors.bulkPut(docs);
 	return getDoctors();
 };
@@ -83,9 +89,6 @@ const seedPositions: Position[] = [
 
 export const getPositions = async (): Promise<string> => {
 	const savedPositions = await db.positions.orderBy('order').toArray();
-	if (!savedPositions || savedPositions.length === 0) {
-		putPositions(seedPositions);
-	}
 	positions.set(savedPositions);
 	return 'ok';
 };
@@ -113,4 +116,8 @@ export const swapPositions = async (pos: Position, direction: 'up' | 'down'): Pr
 		{ ...pos, order: newVal },
 		{ ...swappee, order: pos.order }
 	]);
+};
+export const resetPositions = async (): Promise<string> => {
+	await db.positions.clear();
+	return putPositions(seedPositions);
 };

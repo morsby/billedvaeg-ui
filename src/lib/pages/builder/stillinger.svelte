@@ -14,6 +14,14 @@
 		</div>
 	{/each}
 </Grid>
-<div>
+<div id="buttons">
 	<Button on:click={() => positions.put([])}>Tilføj stilling</Button>
+	<Button kind="danger" on:click={() => positions.reset()}>Nulstil stillinger</Button>
 </div>
+
+<style>
+	#buttons {
+		display: flex;
+		justify-content: space-between;
+	}
+</style>

@@ -3,8 +3,8 @@
 	import Pdf from '$lib/pages/pdf.svelte';
 
 	import 'carbon-components-svelte/css/g10.css';
-	import { Tab, TabContent, Tabs } from 'carbon-components-svelte';
-	import { doctors, positions } from '$lib/stores';
+	import { Tab, TabContent, Tabs, SkeletonPlaceholder } from 'carbon-components-svelte';
+	import { doctors, positions, loading } from '$lib/stores';
 
 	let href = '';
 
@@ -39,19 +39,23 @@
 </script>
 
 <div id="container">
-	<Tabs type="container">
-		<Tab label="Oplysninger" />
-		<Tab label="Se/download PDF" on:click={handleClick} />
-		<div slot="content">
-			<TabContent>
-				<Builder />
-			</TabContent>
+	{#if $loading}
+		<SkeletonPlaceholder />
+	{:else}
+		<Tabs type="container">
+			<Tab label="Oplysninger" />
+			<Tab label="Se/download PDF" on:click={handleClick} />
+			<div slot="content">
+				<TabContent>
+					<Builder />
+				</TabContent>
 
-			<TabContent>
-				<Pdf {href} />
-			</TabContent>
-		</div>
-	</Tabs>
+				<TabContent>
+					<Pdf {href} />
+				</TabContent>
+			</div>
+		</Tabs>
+	{/if}
 </div>
 
 <style>

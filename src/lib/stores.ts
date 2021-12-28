@@ -7,6 +7,7 @@ import {
 	getPositions,
 	putDoctors,
 	putPositions,
+	resetPositions,
 	swapDoctors,
 	swapPositions
 } from './db';
@@ -22,6 +23,7 @@ const createPositions = () => {
 		put: (pos: Position[]) => putPositions(pos),
 		delete: (pos: Position) => deletePosition(pos.id),
 		swap: (pos: Position, direction: 'up' | 'down') => swapPositions(pos, direction),
+		reset: () => resetPositions(),
 		set
 	};
 };
@@ -44,7 +46,15 @@ const createDoctors = () => {
 
 export const doctors = createDoctors();
 
+export const loading = writable(true);
+
+const loadStored = async () => {
+	await getPositions();
+	await getDoctors();
+
+	loading.set(false);
+};
+
 if (browser) {
-	getPositions();
-	getDoctors();
+	loadStored();
 }

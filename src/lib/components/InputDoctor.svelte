@@ -6,16 +6,20 @@
 	import { doctors, positions } from '$lib/stores';
 	import type { Doctor } from '$lib/db';
 	export let doc: Doctor;
-	export let n = 0;
-	export let onDelete: (n: number) => void;
-	export let onMove: (a: number, b: number) => void;
 
-	let selected;
+	let selected = '';
+	const update = (
+		key: string,
+		event: Event & {
+			currentTarget: EventTarget & HTMLInputElement;
+		}
+	) => {
+		doctors.put([{ ...doc, [key]: (<HTMLInputElement>event.target).value }]);
+	};
+	const changePosition = () => {
+		doctors.put([{ ...doc, positionId: parseInt(selected) }]);
+	};
 </script>
-
-<!-- input 
-		
-		-->
 
 <Row style="margin-bottom:1.5rem">
 	<Column sm={4} md={5}>
@@ -29,7 +33,8 @@
 								id="doc-name-{doc.name}"
 								placeholder="Lægens navn"
 								class="bx--text-input"
-								bind:value={doc.name}
+								value={doc.name}
+								on:input={(event) => update('name', event)}
 							/>
 						</div>
 					</div>
@@ -38,11 +43,7 @@
 		</Row>
 		<Row>
 			<Column sm={4} md={5}>
-				<Select
-					labelText="Select menu"
-					bind:selected
-					on:change={() => doctors.setPosition(n, parseInt(selected))}
-				>
+				<Select labelText="Select menu" bind:selected on:change={changePosition}>
 					{#each $positions as pos (pos.id)}
 						<SelectItem value={pos.id.toString()} text={pos.title} />
 					{/each}
@@ -61,7 +62,8 @@
 								id="doc-suppl-{doc.suppl}"
 								placeholder="Supplerende tekst"
 								class="bx--text-input"
-								bind:value={doc.suppl}
+								value={doc.suppl}
+								on:input={(event) => update('suppl', event)}
 							/>
 						</div>
 					</div>
@@ -84,8 +86,8 @@
 				kind="tertiary"
 				size="field"
 				icon={ArrowUp20}
-				disabled={n === 0}
-				on:click={() => onMove(n, n - 1)}
+				disabled={doc.order === 0}
+				on:click={() => doctors.swap(doc, 'up')}
 			/>
 
 			<Button
@@ -93,8 +95,8 @@
 				kind="tertiary"
 				size="field"
 				icon={ArrowDown20}
-				disabled={n === $doctors.length - 1}
-				on:click={() => onMove(n, n + 1)}
+				disabled={doc.order === $doctors.length - 1}
+				on:click={() => doctors.swap(doc, 'down')}
 			/>
 
 			<Button
@@ -102,7 +104,7 @@
 				kind="danger-tertiary"
 				icon={TrashCan20}
 				size="field"
-				on:click={() => onDelete(n)}
+				on:click={() => doctors.delete(doc)}
 			/>
 		</div>
 	</Column>
