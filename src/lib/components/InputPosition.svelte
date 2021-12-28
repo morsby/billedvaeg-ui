@@ -59,7 +59,7 @@
 				kind="tertiary"
 				size="field"
 				icon={ArrowUp20}
-				disabled={position.value === 0}
+				disabled={position.order === 0}
 				on:click={() => positions.swap(position, 'up')}
 			/>
 
@@ -68,7 +68,7 @@
 				kind="tertiary"
 				size="field"
 				icon={ArrowDown20}
-				disabled={position.value === $positions.length - 1}
+				disabled={position.order === $positions.length - 1}
 				on:click={() => positions.swap(position, 'down')}
 			/>
 
