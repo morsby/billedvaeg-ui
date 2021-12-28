@@ -7,6 +7,7 @@
 	import { doctors, positions } from '$lib/stores';
 
 	let href = '';
+
 	const handleClick = async () => {
 		href = '';
 
@@ -20,6 +21,8 @@
 
 			return doc;
 		});
+
+		console.log({ poss, ppl });
 
 		const res = await fetch('http://localhost:5000', {
 			method: 'POST',

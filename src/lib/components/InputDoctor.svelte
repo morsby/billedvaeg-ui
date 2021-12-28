@@ -8,6 +8,8 @@
 	export let n = 0;
 	export let onDelete: (n: number) => void;
 	export let onMove: (a: number, b: number) => void;
+
+	let selected;
 </script>
 
 <!-- input 
@@ -35,9 +37,13 @@
 		</Row>
 		<Row>
 			<Column sm={4} md={5}>
-				<Select labelText="Select menu" bind:selected={doc.positionId}>
-					{#each $positions as pos (pos.abbr)}
-						<SelectItem value={pos.id} text={pos.title} />
+				<Select
+					labelText="Select menu"
+					bind:selected
+					on:change={() => doctors.setPosition(n, parseInt(selected))}
+				>
+					{#each $positions as pos (pos.id)}
+						<SelectItem value={pos.id.toString()} text={pos.title} />
 					{/each}
 				</Select>
 			</Column>

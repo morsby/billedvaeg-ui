@@ -29,6 +29,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"dexie": "^3.2.0",
 		"pdfjs-dist": "^2.10.377"
 	}
 }
