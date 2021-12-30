@@ -10,7 +10,7 @@ export interface Position {
 export interface Doctor {
 	id?: number;
 	name: string;
-	positionId: Position['id'];
+	positionId: number;
 	position?: number;
 	suppl: string;
 	image?: string;
@@ -18,14 +18,14 @@ export interface Doctor {
 }
 
 export class MySubClassedDexie extends Dexie {
-	// 'friends' is added by dexie when declaring the stores()
+	// 'doctors' is added by dexie when declaring the stores()
 	// We just tell the typing system this is the case
 	doctors!: Dexie.Table<Doctor>;
 	positions!: Dexie.Table<Position>;
 
 	constructor() {
 		super('billedvaeg');
-		this.version(1).stores({
+		this.version(2).stores({
 			doctors: '++id, name, positionId, order', // Primary key and indexed props
 			positions: '++id, title, order'
 		});
@@ -36,7 +36,7 @@ export const db = new MySubClassedDexie();
 
 export const getDoctors = async (): Promise<string> => {
 	const docs = await db.doctors.orderBy('order').toArray();
-
+	console.log(docs);
 	doctors.set(docs);
 	return 'ok';
 };
@@ -46,9 +46,19 @@ export const putDoctors = async (docs: Doctor[]): Promise<string> => {
 	const firstPosition = await db.positions.orderBy('order').first();
 	//TODO: Make positionId work!!!
 	if (docs.length === 0) {
-		docs = [{ name: 'test', suppl: '', positionId: firstPosition.id, order: noOfPositions }];
+		docs = [
+			{
+				name: '',
+				suppl: '',
+
+				positionId: firstPosition.id,
+				position: firstPosition.order,
+				order: noOfPositions
+			}
+		];
 	}
 	await db.doctors.bulkPut(docs);
+
 	return getDoctors();
 };
 export const deleteDoctor = async (id: number): Promise<string> => {
@@ -67,6 +77,12 @@ export const swapDoctors = async (doc: Doctor, direction: 'up' | 'down'): Promis
 		{ ...doc, order: newVal },
 		{ ...swappee, order: doc.order }
 	]);
+};
+
+export const updateDoctorPosition = async (doc: Doctor, positionId: number): Promise<string> => {
+	const pos = await db.positions.get(positionId);
+	console.log(pos);
+	return putDoctors([{ ...doc, positionId, position: pos.order }]);
 };
 
 const seedPositions: Position[] = [

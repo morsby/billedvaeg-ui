@@ -7,7 +7,7 @@
 	import type { Doctor } from '$lib/db';
 	export let doc: Doctor;
 
-	let selected = '';
+	let selected = doc.positionId.toString();
 	const update = (
 		key: string,
 		event: Event & {
@@ -16,8 +16,9 @@
 	) => {
 		doctors.put([{ ...doc, [key]: (<HTMLInputElement>event.target).value }]);
 	};
+
 	const changePosition = () => {
-		doctors.put([{ ...doc, positionId: parseInt(selected) }]);
+		doctors.updatePosition(doc, parseInt(selected));
 	};
 </script>
 

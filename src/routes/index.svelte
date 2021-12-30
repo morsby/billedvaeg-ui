@@ -11,25 +11,12 @@
 	const handleClick = async () => {
 		href = '';
 
-		let poss = $positions.map((pos, index) => ({ ...pos, value: index }));
-
-		let ppl = $doctors.map((doc) => {
-			doc = {
-				...doc,
-				position: $positions.findIndex((pos) => pos.id === doc.positionId)
-			};
-
-			return doc;
-		});
-
-		console.log({ poss, ppl });
-
 		const res = await fetch('http://localhost:5000', {
 			method: 'POST',
 			body: JSON.stringify({
-				sort: true,
-				positions: poss,
-				people: ppl
+				sort: false,
+				positions: $positions,
+				people: $doctors
 			})
 		});
 		const data = await res.text();

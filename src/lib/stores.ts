@@ -9,7 +9,8 @@ import {
 	putPositions,
 	resetPositions,
 	swapDoctors,
-	swapPositions
+	swapPositions,
+	updateDoctorPosition
 } from './db';
 import type { Doctor, Position } from '$lib/db';
 
@@ -40,6 +41,7 @@ const createDoctors = () => {
 		put: (docs: Doctor[]) => putDoctors(docs),
 		delete: (doc: Doctor) => deleteDoctor(doc.id),
 		swap: (doc: Doctor, direction: 'up' | 'down') => swapDoctors(doc, direction),
+		updatePosition: (doc: Doctor, positionId: number) => updateDoctorPosition(doc, positionId),
 		set
 	};
 };
