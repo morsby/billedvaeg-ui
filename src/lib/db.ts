@@ -139,3 +139,19 @@ export const resetPositions = async (): Promise<string> => {
 	await db.positions.clear();
 	return putPositions(seedPositions);
 };
+export const exportDb = async (): Promise<Blob> => {
+	const positions = await db.positions.toArray();
+	const doctors = await db.doctors.toArray();
+
+	return new Blob([JSON.stringify({ positions, doctors })]);
+};
+
+export const importDb = async (blob: Blob): Promise<boolean> => {
+	const data = JSON.parse(await blob.text());
+	await db.positions.clear();
+	putPositions(data.positions);
+
+	await db.doctors.clear();
+	putDoctors(data.doctors);
+	return true;
+};

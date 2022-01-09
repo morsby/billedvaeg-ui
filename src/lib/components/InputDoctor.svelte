@@ -4,7 +4,7 @@
 	import ArrowDown20 from 'carbon-icons-svelte/lib/ArrowDown20';
 	import TrashCan20 from 'carbon-icons-svelte/lib/TrashCan20';
 	import { doctors, positions } from '$lib/stores';
-	import type { Base64Image, Doctor } from '$lib/db';
+	import type { Doctor } from '$lib/db';
 	import optimizePhoto from '$lib/optimizePhoto';
 	export let doc: Doctor;
 
@@ -98,8 +98,8 @@
 		<div>
 			<FileUploader
 				buttonLabel="Vælg billede"
-				labelDescription="Kun JPEG tillades."
-				accept={['.jpg', '.jpeg']}
+				labelDescription="Kun JPEG og PNG tillades."
+				accept={['.jpg', '.jpeg', '.png']}
 				status={uploadStatus}
 				on:change={(e) => onImageUpload(e)}
 			/>
