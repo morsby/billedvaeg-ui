@@ -7,13 +7,17 @@ export interface Position {
 	abbr: string;
 	order: number;
 }
+export interface Base64Image {
+	mime: string;
+	data: string;
+}
 export interface Doctor {
 	id?: number;
 	name: string;
 	positionId: number;
 	position?: number;
 	suppl: string;
-	image?: string;
+	image?: Base64Image;
 	order: number;
 }
 
@@ -36,7 +40,6 @@ export const db = new MySubClassedDexie();
 
 export const getDoctors = async (): Promise<string> => {
 	const docs = await db.doctors.orderBy('order').toArray();
-	console.log(docs);
 	doctors.set(docs);
 	return 'ok';
 };
@@ -81,7 +84,6 @@ export const swapDoctors = async (doc: Doctor, direction: 'up' | 'down'): Promis
 
 export const updateDoctorPosition = async (doc: Doctor, positionId: number): Promise<string> => {
 	const pos = await db.positions.get(positionId);
-	console.log(pos);
 	return putDoctors([{ ...doc, positionId, position: pos.order }]);
 };
 

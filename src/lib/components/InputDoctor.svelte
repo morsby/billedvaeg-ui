@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { Row, Column, Button, Select, SelectItem } from 'carbon-components-svelte';
+	import { Row, Column, Button, Select, SelectItem, FileUploader } from 'carbon-components-svelte';
 	import ArrowUp20 from 'carbon-icons-svelte/lib/ArrowUp20';
 	import ArrowDown20 from 'carbon-icons-svelte/lib/ArrowDown20';
 	import TrashCan20 from 'carbon-icons-svelte/lib/TrashCan20';
 	import { doctors, positions } from '$lib/stores';
-	import type { Doctor } from '$lib/db';
+	import type { Base64Image, Doctor } from '$lib/db';
+	import optimizePhoto from '$lib/optimizePhoto';
 	export let doc: Doctor;
 
 	let selected = doc.positionId.toString();
@@ -19,6 +20,17 @@
 
 	const changePosition = () => {
 		doctors.updatePosition(doc, parseInt(selected));
+	};
+
+	type UploadStatus = 'uploading' | 'edit' | 'complete';
+	let uploadStatus: UploadStatus = 'uploading';
+
+	const onImageUpload = async (event) => {
+		let file = event.target.files[0];
+		const resizedImage = await optimizePhoto(file);
+		doctors.put([{ ...doc, image: resizedImage }]);
+
+		uploadStatus = 'complete';
 	};
 </script>
 
@@ -74,11 +86,24 @@
 	</Column>
 
 	<Column sm={2} md={2}>
-		<img
-			src="http://placekitten.com/200/300"
-			alt="placeholder"
-			style="max-width:100%; height:auto;"
-		/>
+		<div>
+			{#if doc.image}
+				<img
+					src={`${doc.image.mime},${doc.image.data}`}
+					alt="placeholder"
+					style="max-width:100%; height:auto;"
+				/>
+			{/if}
+		</div>
+		<div>
+			<FileUploader
+				buttonLabel="Vælg billede"
+				labelDescription="Kun JPEG tillades."
+				accept={['.jpg', '.jpeg']}
+				status={uploadStatus}
+				on:change={(e) => onImageUpload(e)}
+			/>
+		</div>
 	</Column>
 	<Column sm={2} md={1}>
 		<div class="center">
