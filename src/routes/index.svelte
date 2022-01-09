@@ -11,7 +11,7 @@
 	const handleClick = async () => {
 		href = '';
 
-		const res = await fetch('http://localhost:5000', {
+		const res = await fetch('/.netlify/functions/pdf', {
 			method: 'POST',
 			body: JSON.stringify({
 				sort: false,
